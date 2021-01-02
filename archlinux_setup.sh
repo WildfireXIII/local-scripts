@@ -304,3 +304,26 @@ checkfail "?"
 step "Set root password"
 $ch passwd
 checkfail "?"
+
+step "Install GRUB"
+show $ch grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+checkfail "?"
+cedeiffail "get grub-install to work"
+
+step "Make GRUB config"
+show $ch grub-mkconfig -o /boot/grub/grub.cfg
+checkfail "?"
+cedeiffail "get grub-mkconfig to work "
+
+step "Add user"
+show $ch useradd -m -G dwl
+checkfail "?"
+cedeiffail "add DWL user"
+
+step "Set user password"
+show $ch passwd dwl
+checkfail "?"
+cedeiffail "set DWL password"
+
+
+echo -e "\n${CYAN_L}Installation complete!${RESET}"
