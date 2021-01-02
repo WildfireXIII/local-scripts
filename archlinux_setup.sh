@@ -132,7 +132,7 @@ EOF
 	autoPartition="$?"
 
 	echo "Running fdisk..."
-	sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' "$default_fdisk_partitioning" | fdisk $1
+	echo -e "$default_fdisk_partitioning" | sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' | fdisk $1
 	checkfail "Manually partition the disks"
 	cedeiffail "partition disks, note that the suggested partition table is:\n
 	/mnt/efi\tEFI system partition (1)\t+260M
