@@ -288,17 +288,17 @@ checkfail "?"
 
 step "Set locale.conf"
 echo -e "${MAGENTA}$ $ch echo 'LANG=en_us.UTF-8' > /etc/locale.conf${RESET}"
-$ch 'echo "LANG=en_us.UTF-8" > /etc/locale.conf'
+$ch echo "LANG=en_us.UTF-8" > /etc/locale.conf
 checkfail "?"
 
 step "Set hostname"
 read -p "System hostname: " syshostname
 echo -e "${MAGENTA}$ $ch echo $syshostname > /etc/hostname${RESET}"
-$ch "echo $syshostname > /etc/hostname"
+$ch echo $syshostname > /etc/hostname
 checkfail "?"
 
 step "Set hosts"
-$ch "echo -e '127.0.0.1\t${syshostname}\n::1\t\t${syshostname}\n127.0.1.1\t${syshostname}.localdomain\t${syshostname}' > /etc/hosts"
+$ch echo -e "127.0.0.1\t${syshostname}\n::1\t\t${syshostname}\n127.0.1.1\t${syshostname}.localdomain\t${syshostname}" > /etc/hosts
 checkfail "?"
 
 step "Set root password"
