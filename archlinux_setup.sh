@@ -316,7 +316,7 @@ checkfail "?"
 cedeiffail "get grub-mkconfig to work "
 
 step "Add user"
-show $ch useradd -m -G dwl
+show $ch useradd -m dwl
 checkfail "?"
 cedeiffail "add DWL user"
 
