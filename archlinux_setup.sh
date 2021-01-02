@@ -220,17 +220,22 @@ cedeiffail "format and mount partitions\n${MAGENTA_L}mkfs.ext4 [rootpart]\nmkswa
 autoMount="$?"
 
 if [ $autoMount -eq 0 ]; then
+	step "Formatting EFI partition"
+	getEFIPartition
+	show mkfs.fat -F32 $efiPartition
+	checkfail "?"
+	cedeiffail "format EFI system partition as fat32"
+	
 	step "Formatting root partition"
 	getRootPartition
 	show mkfs.ext4 $rootPartition
 	checkfail "?"
-	stopiffail
+	cedeiffail "format root partition as ext4"
 
 	step "Formatting swap partition"
 	getSwapPartition
 	show mkswap $swapPartition
 	checkfail "?"
-	stopiffail
 
 	step "Mount root partition"
 	show mount $rootPartition /mnt
@@ -238,8 +243,7 @@ if [ $autoMount -eq 0 ]; then
 	cedeiffail "mount root partition to /mnt"
 	
 	step "Mount EFI partition"
-	getEFIPartition
-	show mkdir /mnt/boot
+	show mkdir -p /mnt/boot
 	show mount $efiPartition /mnt/boot
 	checkfail "?"
 	cedeiffail "mount efi partition to /mnt/boot"
