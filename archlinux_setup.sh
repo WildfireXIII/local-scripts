@@ -264,9 +264,11 @@ checkfail "?"
 stopiffail
 
 step "Fstab the shit out of it"
-show "genfstab -U /mnt >> /mnt/etc/fstab"
+show mkdir -p /mnt/etc 
+echo -e "${MAGENTA_L}$ genfstab -U /mnt >> /mnt/etc/fstab${RESET}" # seems to fail inside show?
+genfstab -U /mnt >> /mnt/etc/fstab
 checkfail "?"
-stopiffail
+cedeiffail "ensure that /mnt/etc/fstab was generated correctly"
 
 ch="arch-chroot /mnt"
 
