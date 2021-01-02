@@ -254,7 +254,8 @@ if [ $autoMount -eq 0 ]; then
 fi
 
 step "Get mirrors"
-curl "https://archlinux.org/mirrorlist/?country=US&protocol=http&ip_version=4" | sed 's/^.//' > /etc/pacman.d/mirrorlist
+echo -e "${MAGENTA_L}curl 'https://archlinux.org/mirrorlist/?country=US&protocol=http&ip_version=4' | sed 's/^.//' > /etc/pacman.d/mirrorlist${RESET}"
+curl "https://archlinux.org/mirrorlist/?country=US&protocol=http&ip_version=4" | sed "s/^.//" > /etc/pacman.d/mirrorlist
 checkfail "Go to 'https://archlinux.org/mirrorlist', generate a list and copy it into /etc/pacman.d/mirrorlist"
 cedeiffail "update mirrorlist in /etc/pacman.d/mirrorlist"
 
@@ -286,12 +287,14 @@ show $ch locale-gen
 checkfail "?"
 
 step "Set locale.conf"
-show "$ch echo LANG=en_us.UTF-8 > /etc/locale.conf"
+echo "${MAGENTA_L}$ch echo 'LANG=en_us.UTF-8' > /etc/locale.conf${RESET}"
+$ch echo LANG=en_us.UTF-8 > /etc/locale.conf
 checkfail "?"
 
 step "Set hostname"
 read -p "System hostname: " syshostname
-show "$ch echo $systemhostname > /etc/hostname"
+echo -e "${MAGENTA_L}$ch echo $systemhostname > /etc/hostname${RESET}"
+$ch echo $systemhostname > /etc/hostname
 checkfail "?"
 
 step "Set hosts"
