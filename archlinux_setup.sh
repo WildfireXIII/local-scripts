@@ -93,7 +93,7 @@ prompt_yn_default() {
 run_fdisk() {
 read -r -d '' default_fdisk_partitioning <<-EOF
 	g # clear the in memory partition table (GPT)
-	# ---
+	  # ---
 	n # new partition
 	1 # partition number 1
 	# default - start at beginning of disk 
@@ -101,7 +101,7 @@ read -r -d '' default_fdisk_partitioning <<-EOF
 	y # in case there's a vfat sig removal request
 	t # change partition type
 	1 # change type to 1 (EFI System)
-	# ---
+	  # ---
 	n # new partition
 	2 # partion number 2
 	# default, start immediately after preceding partition
@@ -109,12 +109,12 @@ read -r -d '' default_fdisk_partitioning <<-EOF
 	t # change partition type
 	2 # select partition 2 
 	19 # change type to 19 (Linux swap)
-	# ---
+	  # ---
 	n # new partition
 	3 # partition number 3
 	# default, start immediately after preceding partition
 	# default, extend partition to end of disk
-	# ---
+	  # ---
 	p # print the in-memory partition table
 	w # write the partition table
 	q # and we're done
