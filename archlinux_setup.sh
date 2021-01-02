@@ -60,7 +60,35 @@ cede()
 	echo -e "\n${YELLOW_L}Ceding control to user for manual intervention. Run ${RESET}${MAGENTA_L}fg${RESET}${YELLOW_L} to resume${RESET}"
 	echo -e "(Advised intervention: $1)"
 	suspend
-	echo -e "${YELLOW_L}Script granted control again, resuming happily!${RESET}"
+	echo -e "\n${YELLOW_L}Script granted control again, resuming happily!${RESET}"
+}
+
+# https://stackoverflow.com/questions/226703/how-do-i-prompt-for-yes-no-cancel-input-in-a-linux-shell-script
+prompt_yn()
+{
+	while true; do
+		read -p "$1 [y/n]: " yn
+		case $yn in
+			[Yy\n]* ) return 0; break;;
+			[Nn]* ) return 1; break;;
+			* ) echo "Please answer 'y' or 'n'";;
+		esac
+	done
+}
+
+# https://stackoverflow.com/questions/1885525/how-do-i-prompt-a-user-for-confirmation-in-bash-script
+prompt_yn_default()
+{
+	while true; do
+		read -p "$1 [Y/n]: " yn
+		if [[ $yn =~ ^(Y|y) ]] || [[ -z $yn ]]; then
+			return 0
+		elif [[ $yn =~ ^(N|n) ]]; then
+			return 1
+		else
+			echo "Please answer 'y' or 'n'"
+		fi
+	done
 }
 
 
@@ -75,3 +103,12 @@ step "Checking internet connection"
 show ping -c 1 -q google.com
 checkfail "Connect with ${MAGENTA_L}nmtui${RESET}" "Connect with ${MAGENTA_L}wifi-menu${RESET}"
 cedeiffail "establish internet connection"
+
+step "Partitioning disks"
+prompt_yn_default "Auto partition the disks? (Typing no will cede control)"
+cedeiffail "partition disks"
+
+
+show ls /dev/sd* /dev/nvme* /mmcblk*
+read -p "Please choose disk to partition: " disk
+echo "You chose:"
