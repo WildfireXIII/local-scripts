@@ -254,7 +254,7 @@ if [ $autoMount -eq 0 ]; then
 fi
 
 step "Get mirrors"
-echo -e "${MAGENTA_L}$ curl 'https://archlinux.org/mirrorlist/?country=US&protocol=http&ip_version=4' | sed 's/^.//' > /etc/pacman.d/mirrorlist${RESET}"
+echo -e "${MAGENTA}$ curl 'https://archlinux.org/mirrorlist/?country=US&protocol=http&ip_version=4' | sed 's/^.//' > /etc/pacman.d/mirrorlist${RESET}"
 curl "https://archlinux.org/mirrorlist/?country=US&protocol=http&ip_version=4" | sed "s/^.//" > /etc/pacman.d/mirrorlist
 checkfail "Go to 'https://archlinux.org/mirrorlist', generate a list and copy it into /etc/pacman.d/mirrorlist"
 cedeiffail "update mirrorlist in /etc/pacman.d/mirrorlist"
@@ -266,7 +266,7 @@ stopiffail
 
 step "Fstab the shit out of it"
 show mkdir -p /mnt/etc 
-echo -e "${MAGENTA_L}$ genfstab -U /mnt >> /mnt/etc/fstab${RESET}" # seems to fail inside show?
+echo -e "${MAGENTA}$ genfstab -U /mnt >> /mnt/etc/fstab${RESET}" # seems to fail inside show?
 genfstab -U /mnt >> /mnt/etc/fstab
 checkfail "?"
 cedeiffail "ensure that /mnt/etc/fstab was generated correctly"
@@ -275,7 +275,7 @@ ch="arch-chroot /mnt"
 
 step "Link timezone"
 show $ch ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
-checkfail "Manually set timezone with ${MAGENTA_L}$ch ln -sf /usr/share/zoneinfo/[region]/[city] /etc/localtime${RESET}"
+checkfail "Manually set timezone with ${MAGENTA}$ch ln -sf /usr/share/zoneinfo/[region]/[city] /etc/localtime${RESET}"
 cedeiffail "link timezone in /etc/localtime"
 
 step "Set hardwareclock"
@@ -287,13 +287,13 @@ show $ch locale-gen
 checkfail "?"
 
 step "Set locale.conf"
-echo -e "${MAGENTA_L}$ $ch echo 'LANG=en_us.UTF-8' > /etc/locale.conf${RESET}"
+echo -e "${MAGENTA}$ $ch echo 'LANG=en_us.UTF-8' > /etc/locale.conf${RESET}"
 $ch 'echo "LANG=en_us.UTF-8" > /etc/locale.conf'
 checkfail "?"
 
 step "Set hostname"
 read -p "System hostname: " syshostname
-echo -e "${MAGENTA_L}$ $ch echo $syshostname > /etc/hostname${RESET}"
+echo -e "${MAGENTA}$ $ch echo $syshostname > /etc/hostname${RESET}"
 $ch "echo $syshostname > /etc/hostname"
 checkfail "?"
 
