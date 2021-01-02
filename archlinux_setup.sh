@@ -144,7 +144,7 @@ EOF
 getSwapPartition()
 {
 	if [ $autoPartition -eq 0 ]; then
-		if [[ $disk == sd* ]]; then
+		if [[ $disk == /dev/sd* ]]; then
 			swapPartition=${disk}2
 		else
 			ls /dev | grep -E "^sd|^nvme|^mmcblk"
@@ -158,7 +158,7 @@ getSwapPartition()
 getRootPartition()
 {
 	if [ $autoPartition -eq 0 ]; then
-		if [[ $disk == sd* ]]; then
+		if [[ $disk == /dev/sd* ]]; then
 			rootPartition=${disk}3
 		else
 			ls /dev | grep -E "^sd|^nvme|^mmcblk"
@@ -172,7 +172,7 @@ getRootPartition()
 getEFIPartition()
 {
 	if [ $autoPartition -eq 0 ]; then
-		if [[ $disk == sd* ]]; then
+		if [[ $disk == /dev/sd* ]]; then
 			efiPartition=${disk}1
 		else
 			ls /dev | grep -E "^sd|^nvme|^mmcblk"
