@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 RED="\033[0;31m"
 GREEN="\033[0;32m"
 YELLOW="\033[0;33m"
@@ -16,22 +15,22 @@ echo -e "\n\n${CYAN_L}Archlinux setup script v21.1${RESET}\n"
 
 show_output="/dev/tty"
 
-
-
-
 # https://stackoverflow.com/questions/2853803/how-to-echo-shell-commands-as-they-are-executed
 # NOTE: destroys quoting, use with care
 show() { echo -e "${MAGENTA}\$ $@${RESET}" ; "$@" ; }
 
 step() { STEP="---- $1 ----"; echo "$STEP" ; }
 
+stepstatuses=""
 
 checkfail() {
 	if [ $? -eq 0 ]; then
 		echo -e "[ ${GREEN_L}OK${RESET} ] $STEP"
+		stepstatuses="$stepstatuses[ ${GREEN_L}OK${RESET} ] $STEP\n"
 		return 0
 	else
 		echo -e "[${RED_L}FAIL${RESET}] $STEP"
+		stepstatuses="$stepstatuses[${RED_L}FAIL${RESET}] $STEP\n"
 		echo -e "Suggested fixes:"
 		for suggestion in "$@"
 		do
@@ -88,7 +87,6 @@ prompt_yn_default() {
 		fi
 	done
 }
-
 
 run_fdisk() {
 read -r -d '' default_fdisk_partitioning <<-EOF
@@ -183,8 +181,7 @@ getEFIPartition()
 	echo "EFI partition: $efiPartition"
 }
 
-
-set -m
+set -m # monitor mode, this allows `suspend` to work
 
 step "Verifying boot mode (are we in UEFI?)"
 show ls /sys/firmware/efi/efivars >$show_output
@@ -260,7 +257,7 @@ checkfail "Go to 'https://archlinux.org/mirrorlist', generate a list and copy it
 cedeiffail "update mirrorlist in /etc/pacman.d/mirrorlist"
 
 step "Install essential packages"
-show pacstrap /mnt base linux linux-firmware vim git networkmanager grub efibootmgr
+show pacstrap /mnt base linux linux-firmware vim git networkmanager grub efibootmgr sudo openssh
 checkfail "?"
 stopiffail
 
@@ -283,13 +280,20 @@ show $ch hwclock --systohc
 checkfail "?"
 
 step "Set localization"
+show $ch sed -ie "s/\#en_US\.UTF\-8/en_US\.UTF\-8/" /etc/locale.gen
+checkfail "?"
+cedeiffail "uncomment appropriate line in /etc/locale.gen"
+
+step "Generate locales"
 show $ch locale-gen
 checkfail "?"
+cedeiffail "generate locales"
 
 step "Set locale.conf"
 echo -e "${MAGENTA}$ $ch bash -c \"echo 'LANG=en_us.UTF-8' > /etc/locale.conf${RESET}\""
 $ch bash -c "echo 'LANG=en_us.UTF-8' > /etc/locale.conf"
 checkfail "?"
+cedeiffail "add appropriate LANG line in /etc/locale.conf"
 
 step "Set hostname"
 read -p "System hostname: " syshostname
@@ -325,5 +329,14 @@ show $ch passwd dwl
 checkfail "?"
 cedeiffail "set DWL password"
 
+step "Add sudo permissions for user"
+$ch bash -c "echo -e '\nDefaults targetpw\ndwl ALL=(ALL) ALL\n' >> /etc/sudoers"
+checkfail "?"
 
+step "Grab IRIS bootstrap"
+$ch bash -c "sudo -u dwl mkdir /home/dwl/pkg; sudo -u dwl git clone https://github.com/WildfireXIII/iris-bootstrap /home/dwl/pkg"
+checkfail "?"
+
+echo -e "\n\n"
+echo -e "$stepstatuses"
 echo -e "\n${CYAN_L}Installation complete!${RESET}"
